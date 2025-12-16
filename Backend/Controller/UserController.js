@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const UserModel = require("../Model/UserModel");
 const userService = require("../Services/UserService"); 
+const BlacklistTokenModel = require("../Model/BlacklistToken");
 
 module.exports.registerUser = async (req, res, next) => {
     try {
@@ -69,4 +70,19 @@ module.exports.loginUser = async (req, res, next) => {
         console.log("LOGIN ERROR →", error.message);
         return res.status(500).json({ message: "Server error" });
     }
+};
+
+module.exports.getUserProfile = async (req, res, next) => {
+    return res.status(200).json(req.user);
+};
+
+module.exports.logOutUser = async (req, res) => {
+    // For JWT-based auth, logout is handled on client by deleting the token.
+    // Optionally, you can implement token blacklisting here.
+    res.clearCookie('token');
+    const token =
+    req.cookies.token || req.headers.authorizationl;
+await blackListTokenModel.create({ token });
+
+    return res.status(200).json({ message: "Logged out successfully" });
 };
